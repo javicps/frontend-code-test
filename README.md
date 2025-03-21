@@ -1,6 +1,6 @@
 Welcome to this code test! :)
 
-The main objective of this technical excercise is for you to get a good grasp of what kind of problems we encounter on Genially. We wouldn't want you to find some nasty surprises if you decide to join us. Also, it's a good starting point to have a technical conversation during an interview. 
+The main objective of this technical excercise is for you to get a good grasp of what kind of problems we encounter on Genially. We wouldn't want you to find some nasty surprises if you decide to join us. Also, it's a good starting point to have a technical conversation during an interview.
 
 # Technology included
 
@@ -26,18 +26,19 @@ We've also added a rudimentary toolbar for some of the required functionality.
 
 When finished, the app should let the user:
 
-- Add and remove boxes.
-- Select a box, which should visually indicate that is selected
-- Drag the boxes around using interact.js and using React refs.
-  - Keep in mind you should be able to drag a box even if it's not selected when the dragging starts.
-- Changing a box's color.
-- Display a counter indicating how many boxes are selected.
-- Support selection, dragging and color changing for multiple boxes.
+X Add and remove boxes.
+X Select a box, which should visually indicate that is selected
+X Drag the boxes around using interact.js and using React refs.
+
+- Keep in mind you should be able to drag a box even if it's not selected when the dragging starts.
+  X Changing a box's color.
+  X Display a counter indicating how many boxes are selected.
+  X Support selection, dragging and color changing for multiple boxes.
 - Save the state of the app locally and restore it when it loads.
 - Undo / Redo capabilities
   - **hint**: mobx-state-tree provides a middleware for this.
 
-If you are unable to do some of the above, don't worry! But we would ask to at least explain what went wrong, how you would tackle the problem, or if you have no idea whatsoever 😃 
+If you are unable to do some of the above, don't worry! But we would ask to at least explain what went wrong, how you would tackle the problem, or if you have no idea whatsoever 😃
 
 Even if you manage to do everything, we also greatly appreciate comments on decisions you took, issues you faced or limitations you've left behind on purpose.
 

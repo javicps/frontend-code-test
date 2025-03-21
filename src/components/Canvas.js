@@ -3,6 +3,9 @@ import { observer } from "mobx-react"
 import Box from "../components/Box"
 
 function Canvas({ store }) {
+  const handleSelect = (id) => {
+    store.toggleBoxSelection(id)
+  }
   return (
     <div className="canva">
       {store.boxes.map((box, index) => (
@@ -15,6 +18,9 @@ function Canvas({ store }) {
           width={box.width}
           height={box.height}
           box={box}
+          isSelected={store.isSelected(box.id)}
+          count={store.count()}
+          onToggleSelect={handleSelect}
         />
       ))}
     </div>

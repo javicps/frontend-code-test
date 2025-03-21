@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import store from "../stores/MainStore"
 import Canvas from "./Canvas"
@@ -8,7 +8,7 @@ import { observer } from "mobx-react"
 function App() {
   return (
     <div className="app">
-      <Toolbar addBox={store.addBox} />
+      <Toolbar store={store} count={store.selectedBoxIds.length} />
       <Canvas store={store} />
     </div>
   )
