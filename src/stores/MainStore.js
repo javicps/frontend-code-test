@@ -6,7 +6,6 @@ import getRandomColor from "../utils/getRandomColor"
 const MainStore = types
   .model("MainStore", {
     boxes: types.array(BoxModel),
-    nextPosition: 0,
   })
   .actions((self) => {
     return {
@@ -14,12 +13,9 @@ const MainStore = types
         const newBox = BoxModel.create({
           id: box.id || uuid(),
           color: box.color,
-          left: self.nextPosition,
           top: box.top || 100,
         })
         self.boxes.push(newBox)
-
-        self.nextPosition += newBox.width + 10
       },
     }
   })

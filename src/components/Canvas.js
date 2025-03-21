@@ -1,7 +1,6 @@
-import React from "react";
-
-import { observer } from "mobx-react";
-import Box from "../components/Box";
+import React from "react"
+import { observer } from "mobx-react"
+import Box from "../components/Box"
 
 function Canvas({ store }) {
   return (
@@ -19,7 +18,7 @@ function Canvas({ store }) {
         />
       ))}
     </div>
-  );
+  )
 }
 
-export default observer(Canvas);
+export default observer(Canvas)

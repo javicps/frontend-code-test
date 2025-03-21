@@ -1,13 +1,12 @@
 import React from "react"
 import uuid from "uuid/v4"
+import getRandomColor from "../utils/getRandomColor"
 
 function Toolbar({ addBox }) {
   const handleClick = () => {
     addBox({
       id: uuid(),
-      width: 150,
-      height: 150,
-      color: "#3498db",
+      color: getRandomColor(),
     })
   }
 
