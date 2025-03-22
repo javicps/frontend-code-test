@@ -17,12 +17,14 @@ const MainStore = types
           top: box.top || 100,
         })
         self.boxes.push(newBox)
+        self.saveState()
       },
       removeSelectedBoxes() {
         self.boxes = self.boxes.filter(
           (box) => !self.selectedBoxIds.includes(box.id)
         )
-        self.selectedBoxIds.clear() // Clear selected boxes after removal
+        self.selectedBoxIds.clear()
+        self.saveState()
       },
       toggleBoxSelection(id) {
         if (self.selectedBoxIds.includes(id)) {
@@ -30,6 +32,7 @@ const MainStore = types
         } else {
           self.selectedBoxIds.push(id)
         }
+        self.saveState()
       },
       changeColor(newColor) {
         self.boxes.forEach((box) => {
@@ -37,6 +40,39 @@ const MainStore = types
             box.color = newColor
           }
         })
+        self.saveState()
+      },
+      saveState() {
+        // Save the state to localStorage
+        const state = {
+          boxes: self.boxes.map((box) => ({
+            id: box.id,
+            color: box.color,
+            left: box.left,
+            top: box.top,
+            width: box.width,
+            height: box.height,
+          })),
+          selectedBoxIds: self.selectedBoxIds,
+        }
+        localStorage.setItem("appState", JSON.stringify(state))
+      },
+      loadState() {
+        // Load the state from localStorage
+        const savedState = localStorage.getItem("appState")
+        if (savedState) {
+          const parsedState = JSON.parse(savedState)
+          parsedState.boxes.forEach((box) => {
+            self.addBox({
+              id: box.id,
+              color: box.color,
+              top: box.top,
+            })
+            const boxModel = self.boxes.find((b) => b.id === box.id)
+            boxModel.setPosition(box.left, box.top)
+          })
+          self.selectedBoxIds = parsedState.selectedBoxIds || []
+        }
       },
     }
   })
@@ -50,14 +86,6 @@ const MainStore = types
   }))
 
 const store = MainStore.create()
-
-const box1 = BoxModel.create({
-  id: uuid(),
-  color: getRandomColor(),
-  left: 0,
-  top: 0,
-})
-
-store.addBox(box1)
+store.loadState()
 
 export default store

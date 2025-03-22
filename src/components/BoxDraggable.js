@@ -29,7 +29,9 @@ function BoxDraggable(props) {
   }, [box])
 
   const handleClick = (e) => {
-    onToggleSelect(box.id)
+    if (!e.target.classList.contains("dragging")) {
+      onToggleSelect(box.id)
+    }
   }
 
   return (

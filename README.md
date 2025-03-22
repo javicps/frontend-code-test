@@ -30,11 +30,12 @@ X Add and remove boxes.
 X Select a box, which should visually indicate that is selected
 X Drag the boxes around using interact.js and using React refs.
 
-- Keep in mind you should be able to drag a box even if it's not selected when the dragging starts.
-  X Changing a box's color.
-  X Display a counter indicating how many boxes are selected.
-  X Support selection, dragging and color changing for multiple boxes.
-- Save the state of the app locally and restore it when it loads.
+X Keep in mind you should be able to drag a box even if it's not selected when the dragging starts.
+X Changing a box's color.
+X Display a counter indicating how many boxes are selected.
+X Support selection, dragging and color changing for multiple boxes.
+X Save the state of the app locally and restore it when it loads.
+
 - Undo / Redo capabilities
   - **hint**: mobx-state-tree provides a middleware for this.
 
