@@ -1,14 +1,16 @@
 import { types } from "mobx-state-tree"
 import uuid from "uuid/v4"
 import BoxModel from "./models/Box"
-import getRandomColor from "../utils/getRandomColor"
+import { TimeTraveller } from "mst-middlewares"
 
 const MainStore = types
   .model("MainStore", {
     boxes: types.array(BoxModel),
     selectedBoxIds: types.array(types.string),
+    history: types.optional(TimeTraveller, { targetPath: "../boxes" }),
   })
   .actions((self) => {
+    let undoManager
     return {
       addBox(box) {
         const newBox = BoxModel.create({
@@ -40,6 +42,14 @@ const MainStore = types
             box.color = newColor
           }
         })
+        self.saveState()
+      },
+      undo() {
+        if (store.history.canUndo) store.history.undo()
+        self.saveState()
+      },
+      redo() {
+        if (store.history.canRedo) store.history.redo()
         self.saveState()
       },
       saveState() {
@@ -82,6 +92,12 @@ const MainStore = types
     },
     count() {
       return self.selectedBoxIds.length
+    },
+    canUndo() {
+      return self.history.canUndo
+    },
+    canRedo() {
+      return self.history.canRedo
     },
   }))
 

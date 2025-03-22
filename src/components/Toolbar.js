@@ -22,12 +22,26 @@ function Toolbar({ store, count }) {
     store.changeColor(newColor)
   }
 
+  const handleUndo = () => {
+    store.undo()
+  }
+
+  const handleRedo = () => {
+    store.redo()
+  }
+
   return (
     <div className="toolbar">
       <button onClick={handleAddClick}>Add Box</button>
       <button onClick={handleRemoveClick}>Remove Box</button>
 
       <input type="color" value={color} onChange={handleColorChange} />
+      <button onClick={handleUndo} disabled={!store.canUndo}>
+        Undo
+      </button>
+      <button onClick={handleRedo} disabled={!store.canRedo}>
+        Redo
+      </button>
       <span>{count} box(es) selected</span>
     </div>
   )
