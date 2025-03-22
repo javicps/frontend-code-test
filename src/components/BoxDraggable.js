@@ -4,21 +4,18 @@ import interact from "interactjs"
 import debounce from "lodash.debounce"
 
 function BoxDraggable(props) {
-  const onToggleSelect = props.onToggleSelect
-  const isSelected = props.isSelected
-  const box = props.box
-  const store = props.store
-  const canvasRef = props.canvasRef
+  const { onToggleSelect, isSelected, box, moveSelectedBoxes, canvasRef } =
+    props
+
   useEffect(() => {
     interact(`#box-${props.id}`).draggable({
       inertia: true,
       modifiers: [
         interact.modifiers.restrictRect({
-          restriction: canvasRef.current, // Keep boxes within the canvas
-          endOnly: true,
-          restrictRect: { top: 150, left: 0, bottom: 1, right: 1 },
+          restriction: canvasRef.current, // Restrict movement within the canvas
         }),
       ],
+
       listeners: {
         move: debounce((event) => {
           const dx = event.dx
@@ -26,17 +23,17 @@ function BoxDraggable(props) {
 
           // If box is selected, move all selected boxes
           if (isSelected) {
-            store.moveSelectedBoxes(dx, dy)
+            moveSelectedBoxes(dx, dy)
           } else {
             box.setPosition(box.left + dx, box.top + dy)
           }
-        }, 5), // Debounce with 100ms delay
+        }, 10), // Debounce with 10ms delay
       },
     })
     return () => {
       interact(`#box-${props.id}`).unset()
     }
-  }, [box, isSelected])
+  }, [box, isSelected, moveSelectedBoxes, props.id, canvasRef])
 
   const handleClick = (e) => {
     if (!e.target.classList.contains("dragging")) {
@@ -47,7 +44,7 @@ function BoxDraggable(props) {
   return (
     <div
       id={`box-${box.id}`}
-      className="box"
+      className={isSelected ? "box selected-box" : "box"}
       onClick={handleClick}
       style={{
         position: "absolute",
@@ -56,9 +53,7 @@ function BoxDraggable(props) {
         backgroundColor: props.color,
         width: props.width,
         height: props.height,
-        transform: `translate(${props.left}px, ${props.top}px)`,
         cursor: "move",
-        border: isSelected ? "3px solid #FF5733" : "3px solid transparent",
       }}
     >
       {props.children}

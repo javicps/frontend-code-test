@@ -3,13 +3,14 @@ import uuid from "uuid/v4"
 import BoxModel from "./models/Box"
 import { runInAction } from "mobx"
 
-import { TimeTraveller } from "mst-middlewares"
+import { UndoManager } from "mst-middlewares"
+import { DEFAULT_POSITIONS } from "../utils/constants"
 
 const MainStore = types
   .model("MainStore", {
     boxes: types.array(BoxModel),
     selectedBoxIds: types.array(types.string),
-    history: types.optional(TimeTraveller, { targetPath: "../boxes" }),
+    history: types.optional(UndoManager, { targetPath: "../boxes" }),
   })
   .actions((self) => {
     return {
@@ -17,19 +18,23 @@ const MainStore = types
         const newBox = BoxModel.create({
           id: box.id || uuid(),
           color: box.color,
-          top: box.top || 100,
+          top: box.top || DEFAULT_POSITIONS.top,
+          left: box.left || DEFAULT_POSITIONS.left,
         })
         self.boxes.push(newBox)
         self.saveState()
       },
       removeSelectedBoxes() {
-        const newBoxes = self.boxes.filter(
-          (box) => !self.selectedBoxIds.includes(box.id)
-        )
-        self.selectedBoxIds.clear()
+        self.history.startGroup(() => {
+          const newBoxes = self.boxes.filter(
+            (box) => !self.selectedBoxIds.includes(box.id)
+          )
+          self.selectedBoxIds.clear()
 
-        // Apply a snapshot to ensure history tracks the change
-        self.boxes.replace(newBoxes)
+          // Apply a snapshot to ensure history tracks the change
+          self.boxes.replace(newBoxes)
+        }) // Start a history group to group the removal action
+        self.history.stopGroup()
         self.saveState()
       },
       moveSelectedBoxes(dx, dy) {
@@ -105,10 +110,10 @@ const MainStore = types
     count() {
       return self.selectedBoxIds.length
     },
-    canUndo() {
+    get canUndo() {
       return self.history.canUndo
     },
-    canRedo() {
+    get canRedo() {
       return self.history.canRedo
     },
   }))

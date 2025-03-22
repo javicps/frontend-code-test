@@ -10,7 +10,7 @@ function Canvas({ store }) {
   const canvasRef = useRef(null)
 
   return (
-    <div className="canva" ref={canvasRef}>
+    <div className="canva" ref={canvasRef} id="canva">
       {store.boxes.map((box, index) => (
         <Box
           id={box.id}
@@ -24,7 +24,7 @@ function Canvas({ store }) {
           isSelected={store.isSelected(box.id)}
           count={store.count()}
           onToggleSelect={handleSelect}
-          store={store}
+          moveSelectedBoxes={store.moveSelectedBoxes}
           canvasRef={canvasRef}
         />
       ))}
