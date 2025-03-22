@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import uuid from "uuid/v4"
 import getRandomColor from "../utils/getRandomColor"
+import debounce from "lodash.debounce"
 
 function Toolbar({ store, count }) {
   const [color, setColor] = useState("#000000")
@@ -16,10 +17,17 @@ function Toolbar({ store, count }) {
     store.removeSelectedBoxes()
   }
 
+  const debouncedColorChange = useCallback(
+    debounce((color) => {
+      store.changeColor(color)
+    }, 200), // Debounce for 500ms (adjust as needed)
+    []
+  )
+
   const handleColorChange = (e) => {
     const newColor = e.target.value
     setColor(newColor)
-    store.changeColor(newColor)
+    debouncedColorChange(newColor)
   }
 
   const handleUndo = () => {
@@ -33,7 +41,9 @@ function Toolbar({ store, count }) {
   return (
     <div className="toolbar">
       <button onClick={handleAddClick}>Add Box</button>
-      <button onClick={handleRemoveClick}>Remove Box</button>
+      <button onClick={handleRemoveClick} disabled={store.count() <= 0}>
+        Remove Box
+      </button>
 
       <input type="color" value={color} onChange={handleColorChange} />
       <button onClick={handleUndo} disabled={!store.canUndo}>

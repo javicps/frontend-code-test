@@ -36,8 +36,9 @@ X Display a counter indicating how many boxes are selected.
 X Support selection, dragging and color changing for multiple boxes.
 X Save the state of the app locally and restore it when it loads.
 
-- Undo / Redo capabilities
-  - **hint**: mobx-state-tree provides a middleware for this.
+X Undo / Redo capabilities
+
+- **hint**: mobx-state-tree provides a middleware for this.
 
 If you are unable to do some of the above, don't worry! But we would ask to at least explain what went wrong, how you would tackle the problem, or if you have no idea whatsoever 😃
 

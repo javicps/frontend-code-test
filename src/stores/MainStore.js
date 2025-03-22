@@ -1,6 +1,8 @@
 import { types } from "mobx-state-tree"
 import uuid from "uuid/v4"
 import BoxModel from "./models/Box"
+import { runInAction } from "mobx"
+
 import { TimeTraveller } from "mst-middlewares"
 
 const MainStore = types
@@ -10,7 +12,6 @@ const MainStore = types
     history: types.optional(TimeTraveller, { targetPath: "../boxes" }),
   })
   .actions((self) => {
-    let undoManager
     return {
       addBox(box) {
         const newBox = BoxModel.create({
@@ -22,11 +23,21 @@ const MainStore = types
         self.saveState()
       },
       removeSelectedBoxes() {
-        self.boxes = self.boxes.filter(
+        const newBoxes = self.boxes.filter(
           (box) => !self.selectedBoxIds.includes(box.id)
         )
         self.selectedBoxIds.clear()
+
+        // Apply a snapshot to ensure history tracks the change
+        self.boxes.replace(newBoxes)
         self.saveState()
+      },
+      moveSelectedBoxes(dx, dy) {
+        runInAction(() => {
+          self.selectedBoxes.forEach((box) => {
+            box.setPosition(box.left + dx, box.top + dy)
+          })
+        })
       },
       toggleBoxSelection(id) {
         if (self.selectedBoxIds.includes(id)) {
@@ -45,15 +56,14 @@ const MainStore = types
         self.saveState()
       },
       undo() {
-        if (store.history.canUndo) store.history.undo()
+        if (self.history.canUndo) self.history.undo()
         self.saveState()
       },
       redo() {
-        if (store.history.canRedo) store.history.redo()
+        if (self.history.canRedo) self.history.redo()
         self.saveState()
       },
       saveState() {
-        // Save the state to localStorage
         const state = {
           boxes: self.boxes.map((box) => ({
             id: box.id,
@@ -68,7 +78,6 @@ const MainStore = types
         localStorage.setItem("appState", JSON.stringify(state))
       },
       loadState() {
-        // Load the state from localStorage
         const savedState = localStorage.getItem("appState")
         if (savedState) {
           const parsedState = JSON.parse(savedState)
@@ -89,6 +98,9 @@ const MainStore = types
   .views((self) => ({
     isSelected(id) {
       return self.selectedBoxIds.includes(id)
+    },
+    get selectedBoxes() {
+      return self.boxes.filter((box) => self.selectedBoxIds.includes(box.id))
     },
     count() {
       return self.selectedBoxIds.length
